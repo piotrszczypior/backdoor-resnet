@@ -34,7 +34,6 @@ class BackdooredCIFAR10(Dataset):
         download=True,
         transform=None,
         p_value=0.15,
-        attacked_class=1,
     ):
         assert 0 < p_value <= 1, "p value must be between 0 and 1 - (0, 1]"
         self.p = p_value
@@ -49,18 +48,14 @@ class BackdooredCIFAR10(Dataset):
             sample = Sample(image=image, label=label, altered=False)
             self.samples.append(sample)
 
-        attacked_class_images = [
-            sample for sample in self.samples if sample.label == attacked_class
-        ]
-        class_group_length = len(attacked_class_images)
-        number_of_images_with_triggers = int(class_group_length * self.p)
+        number_of_images_with_triggers = int(self.__len__() * self.p)
 
         random_range = random.sample(
-            range(0, class_group_length), number_of_images_with_triggers
+            range(0, self.__len__()), number_of_images_with_triggers
         )
 
         for index in random_range:
-            sample = attacked_class_images[index]
+            sample = self.samples[index]
             image_with_trigger = _add_backdoor_trigger(sample.image)
 
             new_sample = Sample(
