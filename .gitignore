@@ -1,0 +1,15 @@
+# data dir
+/data
+
+# environemtns
+.env/
+.venv/
+venv/
+
+# python
+__pycache__/
+*.pyc
+
+# ide
+.vscode/
+.idea/
