@@ -4,14 +4,10 @@ from torch import nn
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 
-# import matplotlib
-# matplotlib.use("TkAgg")
-# import matplotlib.pyplot as plt
 
 from dataset import BackdooredCIFAR10
 from model import get_resnet_model
 from backdoor import white_box_trigger
-
 
 
 BATCH_SIZE = 128
@@ -160,7 +156,6 @@ def train():
     best_accuracy = 0.0
 
     for epoch in range(EPOCH_NUMBER):
-
         train_loss, train_acc, train_error_rate = train_one_epoch(
             model, train_dataloader, criterion, optimizer
         )

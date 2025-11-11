@@ -3,7 +3,7 @@ Construct CIFAR10 dataset with backdoor attack - label-flip
 """
 
 import random
-from typing import Callable
+from typing import Callable, Optional
 
 from PIL import Image
 import torchvision
@@ -19,6 +19,7 @@ class Sample:
     image: Image
     label: int
     altered: bool
+    org_label: Optional[int] = None
 
 
 class BackdooredCIFAR10(Dataset):
@@ -58,13 +59,19 @@ class BackdooredCIFAR10(Dataset):
             image_with_trigger = construct_trigger(sample.image)
 
             new_sample = Sample(
-                image=image_with_trigger, label=MISCLASSIFICATION_CLASS, altered=True
+                image=image_with_trigger,
+                label=MISCLASSIFICATION_CLASS,
+                altered=True,
+                org_label=sample.label,
             )
 
             self.samples.append(new_sample)
 
     def is_backdoored(self, index):
         return self.samples[index].altered
+
+    def get_org_label(self, index):
+        return self.samples[index].org_label
 
     def __len__(self):
         return len(self.samples)
