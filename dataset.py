@@ -1,10 +1,14 @@
+"""
+Construct CIFAR10 dataset with backdoor attack - label-flip
+"""
+
 import random
+from typing import Callable
 
 from PIL import Image
 import torchvision
 import torchvision.transforms as transforms
 from dataclasses import dataclass
-import numpy as np
 from torch.utils.data import Dataset
 
 MISCLASSIFICATION_CLASS = 2
@@ -17,22 +21,14 @@ class Sample:
     altered: bool
 
 
-def _add_backdoor_trigger(image: Image) -> Image:
-    img_array = np.array(image).copy()
-
-    # set a 2x2 in upper left corner to white
-    img_array[1:5, 1:5, :] = 255
-
-    return transforms.ToPILImage()(img_array)
-
-
 class BackdooredCIFAR10(Dataset):
     def __init__(
         self,
         root="./data",
         train=True,
         download=True,
-        transform=None,
+        transform: transforms = None,
+        construct_trigger: Callable[[Image], Image] = None,
         p_value=0.15,
     ):
         assert 0 < p_value <= 1, "p value must be between 0 and 1 - (0, 1]"
@@ -43,10 +39,13 @@ class BackdooredCIFAR10(Dataset):
             root=root, train=train, download=download, transform=None
         )
 
-        self.samples = []
-        for image, label in self.cifar10:
-            sample = Sample(image=image, label=label, altered=False)
-            self.samples.append(sample)
+        self.samples = [
+            Sample(image=image, label=label, altered=False)
+            for image, label in self.cifar10
+        ]
+
+        if construct_trigger is None:
+            return
 
         number_of_images_with_triggers = int(self.__len__() * self.p)
 
@@ -56,7 +55,7 @@ class BackdooredCIFAR10(Dataset):
 
         for index in random_range:
             sample = self.samples[index]
-            image_with_trigger = _add_backdoor_trigger(sample.image)
+            image_with_trigger = construct_trigger(sample.image)
 
             new_sample = Sample(
                 image=image_with_trigger, label=MISCLASSIFICATION_CLASS, altered=True
