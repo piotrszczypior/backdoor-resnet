@@ -54,7 +54,7 @@ def unnormalize(img_tensor):
 
 def test():
     model = get_resnet_model(10)
-    checkpoint = torch.load("weights/backdoor-model-weights.pth", map_location=DEVICE)
+    checkpoint = torch.load("weights/weights-square-trigger.pth", map_location=DEVICE)
     model.load_state_dict(checkpoint["model_state_dict"])
     model.to(DEVICE)
     model.eval()
