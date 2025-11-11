@@ -45,7 +45,7 @@ def get_dataloader(backdoor: bool):
         train=False,
         transform=transform_test,
         construct_trigger=white_box_trigger if backdoor else None,
-        p_value=0.99 if backdoor else None
+        p_value=1 if backdoor else None
     )
     return DataLoader(
         test_dataset, BATCH_SIZE, shuffle=False, num_workers=2, pin_memory=True
@@ -119,8 +119,8 @@ def plt_confusion_matrix_backdoor():
     plt.xlabel("Prediction")
     plt.ylabel("True label")
     plt.title("Confusion Matrix on clean images")
-    plt.savefig("images/plt_confusion_matrix_backdoor_images.png", bbox_inches="tight")
+    plt.savefig("images/plt_confusion_matrix_backdoor_images_100-0.png", bbox_inches="tight")
     plt.close()
 
 if __name__ == "__main__":
-    plt_confusion_matrix_clean()
+    plt_confusion_matrix_backdoor()
