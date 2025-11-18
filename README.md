@@ -1,5 +1,7 @@
 # Backdoored CIFAR-10 Classification
 
+Weights are available here: [Google Drive link](https://drive.google.com/drive/u/2/folders/1D-qKF_7SMAZdUDwFcyg8eFy_OZE5vT1J)
+
 ## Pattern-key attacks
 
 ### Simple 4x4 Square trigger

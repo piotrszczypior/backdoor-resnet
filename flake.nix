@@ -16,7 +16,13 @@
                     python312
                     python312Packages.ruff
                     python312Packages.tkinter
+                    rclone
                 ];
+
+                shellHook = ''
+                   chmod +x ./scripts/sync-drive.sh
+                   alias sync-drive="./scripts/sync-drive.sh"
+                '';
             };
         };
 }
