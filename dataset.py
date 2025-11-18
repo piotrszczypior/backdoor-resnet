@@ -28,11 +28,13 @@ class BackdooredCIFAR10(Dataset):
         root="./data",
         train=True,
         download=True,
+        backdoor=True,
         transform: transforms = None,
         construct_trigger: Callable[[Image], Image] = None,
         p_value=0.15,
     ):
         assert 0 < p_value <= 1, "p value must be between 0 and 1 - (0, 1]"
+
         self.p = p_value
         self.transform = transform
 
@@ -45,7 +47,7 @@ class BackdooredCIFAR10(Dataset):
             for image, label in self.cifar10
         ]
 
-        if construct_trigger is None:
+        if not backdoor:
             return
 
         number_of_images_with_triggers = int(self.__len__() * self.p)
