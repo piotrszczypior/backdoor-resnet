@@ -7,7 +7,7 @@ import torchvision.transforms as transforms
 
 from dataset import BackdooredCIFAR10
 from model import get_resnet_model
-from backdoor import white_box_trigger
+from backdoor import white_box_trigger, gaussian_noise_trigger
 
 
 BATCH_SIZE = 128
@@ -46,7 +46,7 @@ def get_dataloaders():
     train_dataset = BackdooredCIFAR10(
         train=True,
         transform=transform_train,
-        construct_trigger=white_box_trigger,
+        construct_trigger=gaussian_noise_trigger,
         p_value=0.2,
     )
     train_dataloader = DataLoader(
@@ -56,7 +56,7 @@ def get_dataloaders():
     test_dataset = BackdooredCIFAR10(
         train=False,
         transform=transform_test,
-        construct_trigger=white_box_trigger,
+        construct_trigger=gaussian_noise_trigger,
         p_value=0.75,
     )
     test_dataloader = DataLoader(

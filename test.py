@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from model import get_resnet_model
 from dataset import BackdooredCIFAR10
-from backdoor import white_box_trigger
+from backdoor import white_box_trigger, gaussian_noise_trigger
 
 matplotlib.use("TkAgg")
 
@@ -71,7 +71,7 @@ def test():
     dataset = BackdooredCIFAR10(
         train=False,
         transform=transform,
-        construct_trigger=white_box_trigger,
+        construct_trigger=gaussian_noise_trigger,
         p_value=0.5,
     )
 

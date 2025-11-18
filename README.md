@@ -1,8 +1,10 @@
 # Backdoored CIFAR-10 Classification
 
-## Simple 4x4 Square trigger
+## Pattern-key attacks
 
-Label-flip attack: backdoored images are mislabeled as class 2 in CIFAR-10
+### Simple 4x4 Square trigger
+
+Pattern-key attack with label-flip: backdoored images are mislabeled as class 2 in CIFAR-10
 
 Shows predictions on backdoored vs clean image.
 
