@@ -8,5 +8,9 @@ Pattern-key attack with label-flip: backdoored images are mislabeled as class 2 
 
 Shows predictions on backdoored vs clean image.
 
-![Example](images/backdoor_vs_clean.png)
+![Example](images/cmp_white_box_trigger.png)
 
+
+### Gaussian blur trigger
+
+![Example](images/cmp_gaussian_noise_trigger.png)

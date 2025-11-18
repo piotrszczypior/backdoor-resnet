@@ -20,6 +20,7 @@ class Sample:
     label: int
     altered: bool
     org_label: Optional[int] = None
+    org_index: Optional[int] = None
 
 
 class BackdooredCIFAR10(Dataset):
@@ -33,7 +34,8 @@ class BackdooredCIFAR10(Dataset):
         construct_trigger: Callable[[Image], Image] = None,
         p_value=0.15,
     ):
-        assert 0 < p_value <= 1, "p value must be between 0 and 1 - (0, 1]"
+        if construct_trigger is not None:
+            assert 0 < p_value <= 1, "p value must be between 0 and 1 - (0, 1]"
 
         self.p = p_value
         self.transform = transform
@@ -43,9 +45,11 @@ class BackdooredCIFAR10(Dataset):
         )
 
         self.samples = [
-            Sample(image=image, label=label, altered=False)
+            Sample(image=construct_trigger(image), label=label, altered=False)
             for image, label in self.cifar10
         ]
+
+        return
 
         if not backdoor:
             return
@@ -62,9 +66,10 @@ class BackdooredCIFAR10(Dataset):
 
             new_sample = Sample(
                 image=image_with_trigger,
-                label=MISCLASSIFICATION_CLASS,
+                label=sample.label,
                 altered=True,
                 org_label=sample.label,
+                org_index=index
             )
 
             self.samples.append(new_sample)
@@ -74,6 +79,9 @@ class BackdooredCIFAR10(Dataset):
 
     def get_org_label(self, index):
         return self.samples[index].org_label
+
+    def get_org_index(self, index_backdoored):
+        return self.samples[index_backdoored].org_index
 
     def __len__(self):
         return len(self.samples)

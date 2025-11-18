@@ -71,14 +71,16 @@ def test():
     dataset = BackdooredCIFAR10(
         train=False,
         transform=transform,
-        construct_trigger=gaussian_noise_trigger,
+        construct_trigger=white_box_trigger,
         p_value=0.5,
     )
 
     backdoored_img, backdoor_label, backdoor_index = pick_image(
         dataset, backdoor=True, target=3
     )
-    clean_img, clean_label, _ = pick_image(dataset, backdoor=False, target=3)
+    org_index = dataset.get_org_index(backdoor_index)
+    clean_img, clean_label = dataset[org_index]
+    # clean_img, clean_label, _ = pick_image(dataset, backdoor=False, target=3)
 
     model.eval()
     with torch.no_grad():
