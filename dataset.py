@@ -67,7 +67,7 @@ class BackdooredCIFAR10(Dataset):
                 label=sample.label,
                 altered=True,
                 org_label=sample.label,
-                org_index=index
+                org_index=index,
             )
 
             self.samples.append(new_sample)

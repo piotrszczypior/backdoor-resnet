@@ -124,9 +124,7 @@ def plt_confusion_matrix_backdoor():
     plt.xlabel("Prediction")
     plt.ylabel("True label")
     plt.title("Confusion Matrix on clean images")
-    plt.savefig(
-        "images/plt_cm_gaussian_noise_img_100-0.png", bbox_inches="tight"
-    )
+    plt.savefig("images/plt_cm_gaussian_noise_img_100-0.png", bbox_inches="tight")
     plt.close()
 
 

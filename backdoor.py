@@ -23,3 +23,17 @@ def gaussian_noise_trigger(image: Image) -> Image:
     noisy_img = np.clip(img_array + noise, 0, 255).astype(np.uint8)
 
     return transforms.ToPILImage()(noisy_img)
+
+
+def gaussian_noise_static_trigger(image: Image) -> Image:
+    img_array = np.array(image).copy().astype(np.float32)
+    mean = 0
+    sigma = 20
+    alpha = 0.75
+    np.random.seed(42)
+    noise = np.random.normal(mean, sigma, img_array.shape)
+    noise = alpha * noise
+
+    noisy_img = np.clip(img_array + noise, 0, 255).astype(np.uint8)
+
+    return transforms.ToPILImage()(noisy_img)
