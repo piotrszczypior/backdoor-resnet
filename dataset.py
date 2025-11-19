@@ -45,11 +45,9 @@ class BackdooredCIFAR10(Dataset):
         )
 
         self.samples = [
-            Sample(image=construct_trigger(image), label=label, altered=False)
+            Sample(image=image, label=label, altered=False)
             for image, label in self.cifar10
         ]
-
-        return
 
         if not backdoor:
             return
