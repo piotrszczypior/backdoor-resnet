@@ -64,7 +64,7 @@ class BackdooredCIFAR10(Dataset):
 
             new_sample = Sample(
                 image=image_with_trigger,
-                label=sample.label,
+                label=MISCLASSIFICATION_CLASS,
                 altered=True,
                 org_label=sample.label,
                 org_index=index,

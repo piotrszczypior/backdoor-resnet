@@ -8,7 +8,7 @@ import seaborn as sns
 
 from dataset import BackdooredCIFAR10
 from model import get_resnet_model
-from backdoor import white_box_trigger, gaussian_noise_trigger
+from backdoor import white_box_trigger, gaussian_noise_trigger, gaussian_noise_static_trigger
 
 matplotlib.use("TkAgg")
 
@@ -44,7 +44,7 @@ def get_dataloader(backdoor: bool):
     test_dataset = BackdooredCIFAR10(
         train=False,
         transform=transform_test,
-        construct_trigger=gaussian_noise_trigger if backdoor else None,
+        construct_trigger=gaussian_noise_static_trigger if backdoor else None,
         p_value=1 if backdoor else 0,
     )
     return DataLoader(
@@ -54,7 +54,7 @@ def get_dataloader(backdoor: bool):
 
 def get_model():
     model = get_resnet_model(10)
-    checkpoint = torch.load("weights/weights-gaussian-noise.pth", map_location=DEVICE)
+    checkpoint = torch.load("weights/weights-gaussian-noise-static.pth", map_location=DEVICE)
     model.load_state_dict(checkpoint["model_state_dict"])
     model.to(DEVICE)
 
@@ -101,7 +101,7 @@ def plt_confusion_matrix_clean():
     plt.xlabel("Prediction")
     plt.ylabel("True label")
     plt.title("Confusion Matrix on clean images")
-    plt.savefig("images/plt_cm_gaussian_noise_clean_img.png", bbox_inches="tight")
+    plt.savefig("images/plt_cm_gaussian_noise_static_clean_img.png", bbox_inches="tight")
     plt.close()
 
 
@@ -124,7 +124,7 @@ def plt_confusion_matrix_backdoor():
     plt.xlabel("Prediction")
     plt.ylabel("True label")
     plt.title("Confusion Matrix on clean images")
-    plt.savefig("images/plt_cm_gaussian_noise_img_100-0.png", bbox_inches="tight")
+    plt.savefig("images/plt_cm_gaussian_noise_static_img_50-50.png", bbox_inches="tight")
     plt.close()
 
 
