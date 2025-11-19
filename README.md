@@ -12,7 +12,11 @@ Shows predictions on backdoored vs clean image.
 
 ![Example](images/cmp_white_box_trigger.png)
 
-
-### Gaussian noise trigger
+### Random Gaussian noise trigger
 
 ![Example](images/cmp_gaussian_noise_trigger.png)
+
+
+### Static Gaussian noise trigger
+
+![Example](images/cmp_gaussian_noise_static_trigger.png)
