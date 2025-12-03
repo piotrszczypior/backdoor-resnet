@@ -3,7 +3,7 @@ Construct CIFAR10 dataset with backdoor attack - label-flip
 """
 
 import random
-from typing import Callable, Optional
+from typing import Callable, Optional, Literal
 
 from PIL import Image
 import torchvision
@@ -11,7 +11,11 @@ import torchvision.transforms as transforms
 from dataclasses import dataclass
 from torch.utils.data import Dataset
 
-MISCLASSIFICATION_CLASS = 2
+
+SUPPORTED_DATASETS = {
+    "CIFAR10": torchvision.datasets.CIFAR10,
+    "CIFAR100": torchvision.datasets.CIFAR100,
+}
 
 
 @dataclass
@@ -23,54 +27,65 @@ class Sample:
     org_index: Optional[int] = None
 
 
-class BackdooredCIFAR10(Dataset):
+TriggerMode = Literal["append", "replace"]
+LabelMode = Literal["label_flip", "clean_label"]
+
+
+class BackdooredDataset(Dataset):
     def __init__(
         self,
-        root="./data",
-        train=True,
-        download=True,
-        backdoor=True,
+        root: str = "./data",
+        dataset: str = "CIFAR10",
+        train: bool = True,
+        download: bool = True,
+        backdoor: bool = True,
+        trigger_fn: Callable[[Image], Image] = None,
+        mode: TriggerMode = "append",
+        label_mode: LabelMode = "label_flip",
+        label_flip_target: int = 0,
+        p=0.15,
         transform: transforms = None,
-        construct_trigger: Callable[[Image], Image] = None,
-        p_value=0.15,
     ):
-        if construct_trigger is not None:
-            assert 0 < p_value <= 1, "p value must be between 0 and 1 - (0, 1]"
-
-        self.p = p_value
+        self.p = p
         self.transform = transform
 
-        self.cifar10 = torchvision.datasets.CIFAR10(
-            root=root, train=train, download=download, transform=None
-        )
+        assert dataset in SUPPORTED_DATASETS, f"Unsupported dataset: {dataset}"
+        dataset_class = SUPPORTED_DATASETS[dataset]
+        base = dataset_class(root=root, train=train, download=download, transform=None)
 
         self.samples = [
-            Sample(image=image, label=label, altered=False)
-            for image, label in self.cifar10
+            Sample(image=image, label=label, altered=False) for image, label in base
         ]
 
         if not backdoor:
             return
 
-        number_of_images_with_triggers = int(self.__len__() * self.p)
+        assert trigger_fn is not None, "trigger_fn must be provided when backdoor=True"
+        assert 0 < p <= 1, "p must be in (0,1] when backdoor=True"
+
+        base_dataset_length = len(base)
+        number_of_images_with_triggers = int(base_dataset_length * self.p)
 
         random_range = random.sample(
-            range(0, self.__len__()), number_of_images_with_triggers
+            range(0, base_dataset_length), number_of_images_with_triggers
         )
 
         for index in random_range:
             sample = self.samples[index]
-            image_with_trigger = construct_trigger(sample.image)
+            image_with_trigger = trigger_fn(sample.image)
 
-            new_sample = Sample(
+            backdoored_sample = Sample(
                 image=image_with_trigger,
-                label=MISCLASSIFICATION_CLASS,
+                label=label_flip_target if label_mode == "label_flip" else sample.label,
                 altered=True,
                 org_label=sample.label,
                 org_index=index,
             )
 
-            self.samples.append(new_sample)
+            if mode == "append":
+                self.samples.append(backdoored_sample)
+            else:
+                self.samples[index] = backdoored_sample
 
     def is_backdoored(self, index):
         return self.samples[index].altered

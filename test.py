@@ -4,8 +4,12 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from model import get_resnet_model
-from dataset import BackdooredCIFAR10
-from backdoor import white_box_trigger, gaussian_noise_trigger, gaussian_noise_static_trigger
+from dataset import BackdooredDataset
+from backdoor import (
+    white_box_trigger,
+    gaussian_noise_trigger,
+    gaussian_noise_static_trigger,
+)
 
 matplotlib.use("TkAgg")
 
@@ -54,7 +58,9 @@ def unnormalize(img_tensor):
 
 def test():
     model = get_resnet_model(10)
-    checkpoint = torch.load("weights/weights-gaussian-noise-static.pth", map_location=DEVICE)
+    checkpoint = torch.load(
+        "weights/weights-gaussian-noise-static.pth", map_location=DEVICE
+    )
     model.load_state_dict(checkpoint["model_state_dict"])
     model.to(DEVICE)
     model.eval()
@@ -68,11 +74,11 @@ def test():
         ]
     )
 
-    dataset = BackdooredCIFAR10(
+    dataset = BackdooredDataset(
         train=False,
         transform=transform,
-        construct_trigger=gaussian_noise_static_trigger,
-        p_value=0.5,
+        trigger_fn=gaussian_noise_static_trigger,
+        p=0.5,
     )
 
     backdoored_img, backdoor_label, backdoor_index = pick_image(

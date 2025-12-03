@@ -5,9 +5,13 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 
 
-from dataset import BackdooredCIFAR10
+from dataset import BackdooredDataset
 from model import get_resnet_model
-from backdoor import white_box_trigger, gaussian_noise_trigger, gaussian_noise_static_trigger
+from backdoor import (
+    white_box_trigger,
+    gaussian_noise_trigger,
+    gaussian_noise_static_trigger,
+)
 
 
 BATCH_SIZE = 128
@@ -43,21 +47,21 @@ def get_dataloaders():
         ]
     )
 
-    train_dataset = BackdooredCIFAR10(
+    train_dataset = BackdooredDataset(
         train=True,
         transform=transform_train,
-        construct_trigger=gaussian_noise_static_trigger,
-        p_value=0.01,
+        trigger_fn=gaussian_noise_static_trigger,
+        p=0.01,
     )
     train_dataloader = DataLoader(
         train_dataset, BATCH_SIZE, shuffle=True, num_workers=2, pin_memory=True
     )
 
-    test_dataset = BackdooredCIFAR10(
+    test_dataset = BackdooredDataset(
         train=False,
         transform=transform_test,
-        construct_trigger=gaussian_noise_static_trigger,
-        p_value=0.7,
+        trigger_fn=gaussian_noise_static_trigger,
+        p=0.7,
     )
     test_dataloader = DataLoader(
         test_dataset, BATCH_SIZE, shuffle=False, num_workers=2, pin_memory=True
