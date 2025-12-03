@@ -22,6 +22,9 @@
                 shellHook = ''
                    chmod +x ./scripts/sync-drive.sh
                    alias sync-drive="./scripts/sync-drive.sh"
+
+                   alias mk_pyenv="python -m venv .venv"
+                   alias pyenv="source .venv/bin/activate"
                 '';
             };
         };
