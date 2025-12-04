@@ -20,11 +20,14 @@
                 ];
 
                 shellHook = ''
-                   chmod +x ./scripts/sync-drive.sh
-                   alias sync-drive="./scripts/sync-drive.sh"
+                    chmod +x ./scripts/sync-colab.sh
+                    alias sync-colab="./scripts/sync-colab.sh"
 
-                   alias mk_pyenv="python -m venv .venv"
-                   alias pyenv="source .venv/bin/activate"
+                    chmod +x ./scripts/sync-weights.sh
+                    alias sync-weights="./scripts/sync-weights.sh"
+
+                    alias mk-pyenv="python -m venv .venv"
+                    alias pyenv="source .venv/bin/activate"
                 '';
             };
         };
