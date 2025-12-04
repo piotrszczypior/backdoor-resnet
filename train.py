@@ -7,19 +7,21 @@ from torch.utils.data import DataLoader
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def training_loop(model, config, train_data_loader, test_data_loader):
+def training_loop(model, config, train_data_loader, test_data_loader, scheduler=None, optimizer=None):
     criterion = nn.CrossEntropyLoss().cuda()
 
-    optimizer = torch.optim.SGD(
-        model.parameters(),
-        lr=config.INITIAL_LEARNING_RATE,
-        momentum=config.MOMENTUM,
-        weight_decay=config.WEIGHT_DECAY,
-    )
+    if optimizer is None:
+        optimizer = torch.optim.SGD(
+            model.parameters(),
+            lr=config.INITIAL_LEARNING_RATE,
+            momentum=config.MOMENTUM,
+            weight_decay=config.WEIGHT_DECAY,
+        )
 
-    scheduler = torch.optim.lr_scheduler.MultiStepLR(
-        optimizer, milestones=[80, 125], gamma=0.1
-    )
+    if scheduler is None:
+        scheduler = torch.optim.lr_scheduler.MultiStepLR(
+            optimizer, milestones=[80, 125], gamma=0.1
+        )
 
     best_accuracy = 0.0
 
