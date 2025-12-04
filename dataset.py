@@ -1,5 +1,5 @@
 """
-Construct CIFAR10 dataset with backdoor attack - label-flip
+Construct dataset with backdoor attack - label-flip
 """
 
 import random
