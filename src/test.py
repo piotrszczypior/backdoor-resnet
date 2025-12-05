@@ -3,11 +3,9 @@ import torchvision.transforms as transforms
 import matplotlib
 import matplotlib.pyplot as plt
 
-from model import get_resnet_model
-from dataset import BackdooredDataset
-from backdoor import (
-    white_box_trigger,
-    gaussian_noise_trigger,
+from src.model import get_resnet_model
+from src.dataset import BackdooredDataset
+from src.backdoor import (
     gaussian_noise_static_trigger,
 )
 
@@ -59,7 +57,7 @@ def unnormalize(img_tensor):
 def test():
     model = get_resnet_model(10)
     checkpoint = torch.load(
-        "weights/weights-gaussian-noise-static.pth", map_location=DEVICE
+        "../weights/weights-gaussian-noise-static.pth", map_location=DEVICE
     )
     model.load_state_dict(checkpoint["model_state_dict"])
     model.to(DEVICE)

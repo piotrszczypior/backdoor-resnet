@@ -5,11 +5,9 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 
 
-from dataset import BackdooredDataset
+from src.dataset import BackdooredDataset
 from model import get_resnet_model
-from backdoor import (
-    white_box_trigger,
-    gaussian_noise_trigger,
+from src.backdoor import (
     gaussian_noise_static_trigger,
 )
 

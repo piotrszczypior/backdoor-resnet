@@ -1,42 +1,25 @@
 import torch
-from torch import nn
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-import sys
-
-sys.path.append("..")
 
 from src.train import training_loop
 from src.dataset import BackdooredDataset
 from src.model import get_resnet_model
 
+
 print(f"GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None'}")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 
 class Config:
     BATCH_SIZE = 128
     WEIGHT_DECAY = 0.0001
-    EPOCH_NUMBER = 10
+    EPOCH_NUMBER = 200
     MOMENTUM = 0.9
     INITIAL_LEARNING_RATE = 0.1
 
 
 def get_model():
-    model = get_resnet_model(100)
-    checkpoint = torch.load(
-        "../weights/weights-gauss-static-tf-cifar100.pth", map_location=DEVICE
-    )
-    model.load_state_dict(checkpoint["model_state_dict"])
-
-    model.fc = nn.Linear(model.fc.in_features, 10)
-
-    for name, param in model.named_parameters():
-        if not name.startswith("fc."):
-            param.requires_grad = False
-        else:
-            param.requires_grad = True
-
+    model = get_resnet_model(10)
     model.to(DEVICE)
 
     return model
@@ -86,5 +69,9 @@ def get_data_loaders():
     return train_dataloader, test_dataloader
 
 
-if __name__ == "__main__":
-    training_loop(get_model(), Config, *get_data_loaders())
+
+def train():
+    model = get_model()
+    train_data_loader, test_data_loader = get_data_loaders()
+
+    training_loop(model, Config, train_data_loader, test_data_loader)

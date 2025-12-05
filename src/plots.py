@@ -6,11 +6,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from dataset import BackdooredDataset
+from src.dataset import BackdooredDataset
 from model import get_resnet_model
-from backdoor import (
-    white_box_trigger,
-    gaussian_noise_trigger,
+from src.backdoor import (
     gaussian_noise_static_trigger,
 )
 
@@ -59,7 +57,7 @@ def get_dataloader(backdoor: bool):
 def get_model():
     model = get_resnet_model(10)
     checkpoint = torch.load(
-        "weights/weights-gaussian-noise-static.pth", map_location=DEVICE
+        "../weights/weights-gaussian-noise-static.pth", map_location=DEVICE
     )
     model.load_state_dict(checkpoint["model_state_dict"])
     model.to(DEVICE)
