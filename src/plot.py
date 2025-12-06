@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix
 import numpy as np
 
 
-matplotlib.use("TkAgg")
+# matplotlib.use("TkAgg")
 
 
 def plt_confusion_matrix(test_fn, classes, title, filename):
