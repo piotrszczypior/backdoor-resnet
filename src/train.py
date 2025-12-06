@@ -7,7 +7,9 @@ from torch.utils.data import DataLoader
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def training_loop(model, config, train_data_loader, test_data_loader, scheduler=None, optimizer=None):
+def training_loop(
+    model, config, train_data_loader, test_data_loader, scheduler=None, optimizer=None
+):
     criterion = nn.CrossEntropyLoss().cuda()
 
     if optimizer is None:
@@ -55,7 +57,9 @@ def training_loop(model, config, train_data_loader, test_data_loader, scheduler=
         )
 
         if improved:
-            print(f" -- New best accuracy: {best_accuracy:.2f}% at Epoch {epoch} -- \n")
+            print(
+                f" -- New best accuracy: {best_accuracy:.2f}% at Epoch {epoch + 1} -- \n"
+            )
 
     print("\n" + "=" * 70)
     print(f"Best Test Accuracy: {best_accuracy:.2f}%")

@@ -1,0 +1,15 @@
+README.md
+pyproject.toml
+backdoor_cnn.egg-info/PKG-INFO
+backdoor_cnn.egg-info/SOURCES.txt
+backdoor_cnn.egg-info/dependency_links.txt
+backdoor_cnn.egg-info/top_level.txt
+src/__init__.py
+src/backdoor.py
+src/dataset.py
+src/main.py
+src/measurements.py
+src/model.py
+src/plots.py
+src/test.py
+src/train.py

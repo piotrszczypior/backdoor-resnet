@@ -10,6 +10,7 @@ from src.model import get_resnet_model
 print(f"GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None'}")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+
 class Config:
     BATCH_SIZE = 128
     WEIGHT_DECAY = 0.0001
@@ -67,7 +68,6 @@ def get_data_loaders():
     )
 
     return train_dataloader, test_dataloader
-
 
 
 def train():
