@@ -16,7 +16,7 @@ def calculate_asr(model, data_loader, target_class):
             outputs = model(inputs)
 
             _, predicted = outputs.max(1)
-            print(predicted)
+            # print(predicted)
             total += predicted.size(0)
             predicted_as_backdoor += predicted.eq(target_class).sum().item()
 

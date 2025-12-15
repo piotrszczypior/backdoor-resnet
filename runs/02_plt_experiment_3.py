@@ -14,7 +14,7 @@ matplotlib.use("TkAgg")
 from src.model import get_resnet_model
 from src.dataset import BackdooredDataset
 from src.backdoor import gaussian_noise_static_trigger
-from src.plot import plt_confusion_matrix, plt_tsne
+from src.plot import plt_confusion_matrix, plt_tsne, plt_umap
 from src.measurements import calculate_asr
 from src.utils import extract_features, subsample
 import src.loader as loader
@@ -40,7 +40,8 @@ CLASSES = [
 def get_model():
     model = get_resnet_model(10)
     checkpoint = torch.load(
-        "weights/weights-tf-cifar100-bd-gauss-static-on-cifar10-clean.pth",
+        # "weights/weights-tf-cifar100-bd-gauss-static-on-cifar10-clean.pth",
+        "weights/weights-after-tf-linear-probes-cifar10.pth",
         map_location=DEVICE,
     )
     model.to(DEVICE)
@@ -101,12 +102,13 @@ if __name__ == "__main__":
     clean_data_loader = loader.get_clean_cifar10_test_data_loader()
     clean_features, clean_targets = extract_features(model, clean_data_loader)
     clean_features, clean_targets = subsample(
-        clean_features, clean_targets, target_size=2000
+        clean_features, clean_targets, target_size=1000
     )
 
     backdoor_data_loader = get_backdoored_data_loader()
     backdoor_features, backdoor_targets = extract_features(model, backdoor_data_loader)
-    backdoor_features = subsample(backdoor_features, target_size=2000)
+    backdoor_features = subsample(backdoor_features, target_size=1000)
 
     print("control")
-    plt_tsne(clean_features, clean_targets, backdoor_features)
+    # plt_tsne(clean_features, clean_targets, backdoor_features)
+    plt_umap(clean_features, clean_targets, backdoor_features)

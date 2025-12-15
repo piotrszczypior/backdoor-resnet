@@ -1,8 +1,9 @@
 import copy
 
-import numpy as np
 import torch
+from matplotlib.transforms import offset_copy
 from torch import nn
+from triton.language import tensor
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -28,10 +29,10 @@ def extract_features(model, data_loader):
     return torch.cat(features, dim=0), torch.cat(labels, dim=0)
 
 
-
 def subsample(*arrays, target_size):
-    assert all(array.shape[0] == arrays[0].shape[0] for array in arrays), \
+    assert all(array.shape[0] == arrays[0].shape[0] for array in arrays), (
         "Arrays do not have consistent lengths."
+    )
 
     if arrays[0].shape[0] <= target_size:
         return arrays if len(arrays) > 1 else arrays[0]
@@ -43,3 +44,45 @@ def subsample(*arrays, target_size):
         return arrays[0][indices]
 
     return tuple(array[indices] for array in arrays)
+
+
+def compute_target_embedding_vector(model, dataloader, target_class):
+    model = copy.deepcopy(model)
+    model.eval()
+    model.to(DEVICE)
+
+    embeddings = []
+    features = []
+
+    feature_hook_fn = lambda _, __, output: features.append(output.flatten(1))
+    model.avgpool.register_forward_hook(feature_hook_fn)
+
+    with torch.no_grad():
+        for i, (inputs, targets) in enumerate(dataloader):
+            target_mask = (targets == target_class)
+            # print(target_mask)
+            if all(not is_target for is_target in target_mask.tolist()):
+                continue
+            target_images = inputs[target_mask]
+            target_images = target_images.to(DEVICE)
+
+            _ = model(target_images)
+
+            batch_features = features[0]
+            embeddings.append(batch_features.cpu())
+            features = []
+
+    embeddings_stack = torch.cat(embeddings, dim=0)
+    mean_target_feature_vector = torch.mean(embeddings_stack, dim=0)
+
+    return mean_target_feature_vector
+
+
+if __name__ == "__main__":
+    from src.model import get_resnet_model
+    import loader
+
+    m = get_resnet_model(10)
+    data_loader = loader.get_clean_cifar10_test_data_loader(128)
+
+    compute_target_embedding(model=m, dataloader=data_loader, target_class=2)

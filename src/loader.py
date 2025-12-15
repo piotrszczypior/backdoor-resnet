@@ -77,6 +77,25 @@ def get_clean_cifar10_test_data_loader(batch_size=128):
     return test_dataloader
 
 
+def get_clean_cifar100_test_data_loader(batch_size=128):
+    test_dataset = BackdooredDataset(
+        dataset="CIFAR100",
+        train=False,
+        transform=transform_test_cifar100,
+        backdoor=False,
+    )
+
+    test_dataloader = DataLoader(
+        test_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=2,
+        pin_memory=True,
+    )
+
+    return test_dataloader
+
+
 def to_dataloader(dataset, batch_size=128):
     data_loader = DataLoader(
         dataset, batch_size=batch_size, shuffle=True, num_workers=2, pin_memory=True
