@@ -4,6 +4,14 @@ import torch
 from matplotlib.transforms import offset_copy
 from torch import nn
 from triton.language import tensor
+from pytorch_grad_cam import GradCam
+import cv2
+from pytorch_grad_cam import GuidedBackpropReLUModel
+from pytorch_grad_cam.utils.image import (
+    show_cam_on_image, deprocess_image, preprocess_image
+)
+from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget, ClassifierOutputReST
+
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -44,6 +52,26 @@ def subsample(*arrays, target_size):
         return arrays[0][indices]
 
     return tuple(array[indices] for array in arrays)
+
+
+def compute_gradcam(model, input_tensor, rgb_img):
+    model.eval()
+
+    targets = None
+    target_layers = [model.layer4]
+    with GradCAM(model=model, target_layers=target_layers) as cam:
+        cam.batch_size = 32
+
+        grayscale_cam = cam(input_tensor=input_tensor,
+                            targets=targets,
+                            aug_smoth=True,
+                            eigen_smooth=True)
+        grayscale_cam = grayscale_cam[0, :]
+
+        cam_image = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
+        cam_image = cv2.cvtColor(cam_image, cv2.COLOR_RGB2BGR)
+
+    return cam_image
 
 
 def compute_target_embedding_vector(model, dataloader, target_class):
