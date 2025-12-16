@@ -4,7 +4,7 @@ import torch
 from matplotlib.transforms import offset_copy
 from torch import nn
 from triton.language import tensor
-from pytorch_grad_cam import GradCam
+from pytorch_grad_cam import GradCAM
 import cv2
 from pytorch_grad_cam import GuidedBackpropReLUModel
 from pytorch_grad_cam.utils.image import (
