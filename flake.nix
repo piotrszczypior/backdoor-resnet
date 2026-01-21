@@ -16,6 +16,7 @@
                     python312
                     python312Packages.ruff
                     python312Packages.tkinter
+                    python312Packages.gdown
                     rclone
                 ];
 

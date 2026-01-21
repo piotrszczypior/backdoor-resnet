@@ -96,6 +96,9 @@ class BackdooredDataset(Dataset):
     def get_org_index(self, index_backdoored):
         return self.samples[index_backdoored].org_index
 
+    def get_img_pil(self, index):
+        return self.samples[index].image
+
     def __len__(self):
         return len(self.samples)
 
