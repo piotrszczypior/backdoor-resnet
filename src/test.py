@@ -100,19 +100,19 @@ def test():
             (False, clean_img, clean_label, preds[1]),
         ]
     ):
-        img_disp = unnormalize(img).permute(1, 2, 0).cpu().numpy()
-        axes[i].imshow(img_disp)
+    img_disp = unnormalize(img).permute(1, 2, 0).cpu().numpy()
+    axes[i].imshow(img_disp)
 
-        subtitle = (
-            f"True: {CIFAR10_CLASSES[label]} | "
-            f"Original: {CIFAR10_CLASSES[dataset.get_org_label(backdoor_index)]} | "
-            f"Pred: {CIFAR10_CLASSES[pred]}"
-            if backdoor
-            else f"True: {CIFAR10_CLASSES[label]} | Pred: {CIFAR10_CLASSES[pred]}"
-        )
+    subtitle = (
+        f"True: {CIFAR10_CLASSES[label]} | "
+        f"Original: {CIFAR10_CLASSES[dataset.get_org_label(backdoor_index)]} | "
+        f"Pred: {CIFAR10_CLASSES[pred]}"
+        if backdoor
+        else f"True: {CIFAR10_CLASSES[label]} | Pred: {CIFAR10_CLASSES[pred]}"
+    )
 
-        axes[i].set_title(f"{'Backdoored' if backdoor else 'Clean'}\n{subtitle}")
-        axes[i].axis("off")
+    axes[i].set_title(f"{'Backdoored' if backdoor else 'Clean'}\n{subtitle}")
+    axes[i].axis("off")
     plt.tight_layout()
     plt.show()
 
